@@ -1,0 +1,39 @@
+ shell实现自动备份 2009-07-20 15:06:46
+分类：
+前几天一个在新闻组上有人发了这么一个问题：
+
+一个文件夹下有一些以省名+日期为名字的日志文件，这个文夹下的日志文件每天更新，
+现要把这个文件夹下的文件，每天自动执行一次将日志文件移动到各省对应的用户目录下/home/along/code/shell/shell/省名／下.
+应该如何实现？
+
+这里假设文件名：省名_日期
+下面是我写的脚本：
+#!/bin/bash
+#Scriptname：autocopy.sh
+#从finddata文件下读取文件名存放在name变量中
+#从name中提取对应文件的省名
+
+#SourcePath源文件的地址
+#AimPath目标地址
+
+SourcePath="/home/along/code/shell/shell/finddata"
+AimPath="/home/along/code/shell/shell/findgod"
+
+name=`ls -l $SourcePath | awk '{print $8}'`
+
+for i in $name
+    do
+#locat:提取文件对应的省分的名字
+        locat=`expr $i : '\(.*\)_[0-9].*'`
+        pathname=`echo $AimPath"/"$locat`
+
+        if [ ! -d $pathname ]
+        then
+            mkdir $pathname
+        fi
+        
+        filename=`echo $SourcePath"/"$i`
+        cp $filename $pathname
+    done
+#echo "Success Copy!"
+exit 0
